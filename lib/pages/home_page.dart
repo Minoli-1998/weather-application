@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:provider/provider.dart';
 import 'package:weather_application/models/weather_model.dart';
 import 'package:weather_application/pages/serach_weather_page.dart';
+import 'package:weather_application/providers/theme_provider.dart';
 import 'package:weather_application/services/weather_service.dart';
 import 'package:weather_application/widgets/display_weather.dart';
 
@@ -46,7 +48,21 @@ class _HomePageState extends State<HomePage> {
           style: TextStyle(fontWeight: FontWeight.w400),
         ),
 
-        actions: [IconButton(onPressed: () {}, icon: Icon(Icons.light_mode))],
+        actions: [
+          IconButton(
+            onPressed: () {
+              Provider.of<ThemeProvider>(
+                context,
+                listen: false,
+              ).toggleTheme(Theme.of(context).brightness != Brightness.dark);
+            },
+            icon: Icon(
+              Theme.of(context).brightness == Brightness.dark
+                  ? Icons.light_mode
+                  : Icons.dark_mode,
+            ),
+          ),
+        ],
       ),
 
       body: _weather != null
