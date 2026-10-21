@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:weather_application/models/weather_model.dart';
+import 'package:weather_application/pages/serach_weather_page.dart';
 import 'package:weather_application/services/weather_service.dart';
+import 'package:weather_application/widgets/display_weather.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -19,7 +21,7 @@ class _HomePageState extends State<HomePage> {
 
   void fetchWeather() async {
     try {
-      final weather = await _weatherService.getWeatherByLocation();
+      final weather = await _weatherService.getWeather("Kurunegala");
 
       setState(() {
         _weather = weather;
@@ -37,6 +39,59 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(appBar: AppBar(title: Text("Home Page")));
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          "Easy Weather",
+          style: TextStyle(fontWeight: FontWeight.w400),
+        ),
+
+        actions: [IconButton(onPressed: () {}, icon: Icon(Icons.light_mode))],
+      ),
+
+      body: _weather != null
+          ? SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  DisplayWeather(weather: _weather!),
+
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return SerachWeatherPage();
+                          },
+                        ),
+                      );
+                    },
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                        vertical: 8,
+                        horizontal: 20,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Color.fromARGB(107, 255, 208, 128),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        "Search Weather",
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.orangeAccent,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(height: 40),
+                ],
+              ),
+            )
+          : Center(child: CircularProgressIndicator()),
+    );
   }
 }
